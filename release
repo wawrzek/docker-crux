@@ -87,7 +87,7 @@ committobranch()
 	git branch -D ${BRANCH}
     fi
 
-    git checkout -b ${BRANCH}
+    git checkout origin/master -b ${BRANCH}
 
     git add -f rootfs.tar.xz
 
