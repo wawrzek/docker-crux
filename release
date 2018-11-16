@@ -154,7 +154,10 @@ library()
 	for b in `git branch -r | grep -E ${REMOTE}/release-$v`; do
 	    head=${b##*/}
 	    sha=$(git log --format="%H" -n1 ${b})
-	    arch=$(echo ${b} | cut -d '-' -f 3 | sed 's/x86_64/amd64/')
+	    arch=$(echo ${b} | cut -d '-' -f 3)
+
+	    # Docker Hub has an odd nomenclature for architectures
+	    arch=$(echo ${arch} | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64v8/')
 
 	    ARCHES="${ARCHES} $arch,"
 
