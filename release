@@ -87,7 +87,9 @@ committobranch()
 	git branch -D ${BRANCH}
     fi
 
-    git checkout -b ${BRANCH}
+    git fetch origin
+
+    git checkout origin/master -b ${BRANCH}
 
     git add -f rootfs.tar.xz
 
@@ -136,9 +138,12 @@ library()
     local latest=", latest"
 
     git fetch ${REMOTE}
+    mastersha=$(git log --format="%H" -n1 origin/master)
 
-    echo "Maintainers: James Mills <prologic@shortcircuit.net.au> (@prologic)"
+    echo "Maintainers: James Mills (@prologic),"
+    echo "             Lee Jones (@lag-linaro)"
     echo "GitRepo: $(git config --get remote.${REMOTE}.url)"
+    echo "GitCommit: ${mastersha}"
 
     for v in `git branch -r | grep -E ${REMOTE}/release-[0-9]+[.][0-9]+ | grep -Eo [0-9]+[.][0-9]+`; do
 	VERSIONS="$VERSIONS $v"
@@ -152,7 +157,10 @@ library()
 	for b in `git branch -r | grep -E ${REMOTE}/release-$v`; do
 	    head=${b##*/}
 	    sha=$(git log --format="%H" -n1 ${b})
-	    arch=$(echo ${b} | cut -d '-' -f 3 | sed 's/x86_64/amd64/')
+	    arch=$(echo ${b} | cut -d '-' -f 3)
+
+	    # Docker Hub has an odd nomenclature for architectures
+	    arch=$(echo ${arch} | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64v8/')
 
 	    ARCHES="${ARCHES} $arch,"
 
