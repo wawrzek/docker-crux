@@ -140,7 +140,8 @@ library()
     git fetch ${REMOTE}
     mastersha=$(git log --format="%H" -n1 origin/master)
 
-    echo "Maintainers: James Mills <prologic@shortcircuit.net.au> (@prologic)"
+    echo "Maintainers: James Mills (@prologic),"
+    echo "             Lee Jones (@lag-linaro)"
     echo "GitRepo: $(git config --get remote.${REMOTE}.url)"
     echo "GitCommit: ${mastersha}"
 
