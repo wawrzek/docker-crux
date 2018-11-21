@@ -138,9 +138,11 @@ library()
     local latest=", latest"
 
     git fetch ${REMOTE}
+    mastersha=$(git log --format="%H" -n1 origin/master)
 
     echo "Maintainers: James Mills <prologic@shortcircuit.net.au> (@prologic)"
     echo "GitRepo: $(git config --get remote.${REMOTE}.url)"
+    echo "GitCommit: ${mastersha}"
 
     for v in `git branch -r | grep -E ${REMOTE}/release-[0-9]+[.][0-9]+ | grep -Eo [0-9]+[.][0-9]+`; do
 	VERSIONS="$VERSIONS $v"
