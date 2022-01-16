@@ -19,12 +19,12 @@ mkrootfsfromiso()
 
     # Make sure the downloaded file exists
     if [ ! -e ${ISO} ]; then
-    echo "${ISO} doesn't exist"
+        echo "${ISO} doesn't exist"
     fi
 
     # Ensure the downloaded file is an ISO file
     if ! ls | grep *.iso$ > /dev/null; then
-    echo "No ISO found"
+        echo "No ISO found"
     fi
 
     # Mount the ISO
@@ -51,10 +51,10 @@ cleanuprootfs()
 {
     # Remove agetty and inittab config
     if (grep agetty ${ROOTFS}/etc/inittab 2>&1 > /dev/null); then
-    echo "Removing agetty from /etc/inittab ..."
-    chroot ${ROOTFS} sed -i -e "/agetty/d" /etc/inittab
-    chroot ${ROOTFS} sed -i -e "/shutdown/d" /etc/inittab
-    chroot ${ROOTFS} sed -i -e "/^$/N;/^\n$/d" /etc/inittab
+        echo "Removing agetty from /etc/inittab ..."
+        chroot ${ROOTFS} sed -i -e "/agetty/d" /etc/inittab
+        chroot ${ROOTFS} sed -i -e "/shutdown/d" /etc/inittab
+        chroot ${ROOTFS} sed -i -e "/^$/N;/^\n$/d" /etc/inittab
     fi
 
     # Remove kernel source
@@ -67,7 +67,7 @@ cleanuprootfs()
               reiserfsprogs sysfsutils sysvinit xfsprogs)
 
     for pkg in ${pkgs[@]}; do
-    chroot ${ROOTFS} /usr/bin/pkgrm ${pkg} || true
+        chroot ${ROOTFS} /usr/bin/pkgrm ${pkg} || true
     done
 }
 
@@ -112,7 +112,10 @@ main()
     CRUX=$(mktemp -d /tmp/crux-XXXXXXXXXX)
     TMP=$(mktemp -d /tmp/XXXXXXXXXX)
 
-    download
+    ISO=$(basename ${URL})
+    if [ ! -e ${ISO} ]; then
+        download
+    fi
     mkrootfsfromiso
     cleanuprootfs
     mkdev
